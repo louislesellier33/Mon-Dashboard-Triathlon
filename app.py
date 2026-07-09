@@ -49,11 +49,6 @@ try:
 except Exception as e:
     st.error(f"Erreur de connexion à la base de données : {e}")
 
-# --- 4. LA SÉANCE DU JOUR (Espace pour la suite) ---
-st.divider()
-st.header("🎯 Ma Séance du Jour")
-# --- 4. LA SÉANCE DU JOUR (ADAPTATIVE) ---
-st.divider()
 st.header("🎯 Ma Séance du Jour")
 
 try:
