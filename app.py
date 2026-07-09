@@ -52,4 +52,33 @@ except Exception as e:
 # --- 4. LA SÉANCE DU JOUR (Espace pour la suite) ---
 st.divider()
 st.header("🎯 Ma Séance du Jour")
-st.info("Bientôt ici : L'algorithme affichera ta séance adaptée automatiquement en fonction de ton sommeil de la nuit dernière !")
+# --- 4. LA SÉANCE DU JOUR (ADAPTATIVE) ---
+st.divider()
+st.header("🎯 Ma Séance du Jour")
+
+try:
+    # On demande à Supabase la dernière ligne de notre tableau du jour
+    reponse_jour = supabase.table("daily_status").select("*").order("id", desc=True).limit(1).execute()
+    donnees_jour = reponse_jour.data
+
+    if donnees_jour:
+        statut = donnees_jour[0]
+        
+        # Affichage du score
+        st.subheader(f"{statut['etat_fatigue']}")
+        st.metric(label="💤 Score de Sommeil Garmin", value=f"{statut['score_sommeil']} / 100")
+        
+        # Affichage de la recommandation avec la bonne couleur
+        if "🟢" in statut['etat_fatigue']:
+            st.success(f"**Prescription du Coach :** {statut['seance_recommandee']}")
+        elif "🟠" in statut['etat_fatigue']:
+            st.warning(f"**Prescription du Coach :** {statut['seance_recommandee']}")
+        else:
+            st.error(f"**Prescription du Coach :** {statut['seance_recommandee']}")
+            
+        st.caption(f"Analyse basée sur ta nuit du {statut['date_jour']}")
+    else:
+        st.info("Aucune séance calculée pour aujourd'hui. L'algorithme n'a pas encore tourné !")
+        
+except Exception as e:
+    st.error(f"Erreur lors de la récupération de la séance du jour : {e}")
